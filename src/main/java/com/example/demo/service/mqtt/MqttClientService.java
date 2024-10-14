@@ -62,7 +62,6 @@ public class MqttClientService {
 
         @Override
         public void messageArrived(String s, MqttMessage mqttMessage) {
-            // TODO: handle
             log.info("MqttMessage received: {}", mqttMessage.toString());
         }
 
