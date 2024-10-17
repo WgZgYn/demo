@@ -1,8 +1,10 @@
-package com.example.demo.service;
+package com.example.demo.service.tcp;
 
+import com.example.demo.service.DeviceControlService;
+import com.example.demo.service.DeviceDataService;
 import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -11,10 +13,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 
+@Slf4j
 @Service
 public class DevicePairService {
-    private static final Logger log = LoggerFactory.getLogger(DevicePairService.class);
-    private static final int LISTEN_PORT = 45677;
+    @Value("${local_tcp_listening_port}")
+    private int LISTEN_PORT;
+
+    @Value("${pair_code}")
+    private int ASK_FOR_PAIR;
+
     DeviceControlService deviceControlService;
     DeviceDataService deviceDataService;
 
@@ -23,9 +30,10 @@ public class DevicePairService {
         this.deviceDataService = deviceDataService;
     }
 
-
     @PostConstruct
     public void startTcpServer() {
+
+        // TODO: refactor the dto
         Thread tcpServer = new Thread(() -> {
             try (ServerSocket serverSocket = new ServerSocket(LISTEN_PORT)) {
                 log.info("Listening on port {}", LISTEN_PORT);
@@ -33,10 +41,15 @@ public class DevicePairService {
                     try (Socket clientSocket = serverSocket.accept()) {
                         InetAddress address = clientSocket.getInetAddress();
                         log.info("the device's ip: {}", address.getHostAddress());
-                        String deviceId = new String(clientSocket.getInputStream().readAllBytes());
+
+//                        String deviceId = new String(clientSocket.getInputStream().readAllBytes());
+                        if (clientSocket.getInputStream().read() != ASK_FOR_PAIR) {
+                            continue;
+                        }
+
                         clientSocket.getOutputStream().write(200);
-                        log.info("read reply: {}", deviceId);
-                        deviceDataService.addDevice(deviceId, address.getHostAddress());
+//                        log.info("read reply: {}", deviceId);
+                        deviceDataService.addPairingDevice(address.getHostAddress());
                     } catch (IOException e) {
                         log.error("Client connection error: ", e);
                     }
