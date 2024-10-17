@@ -29,8 +29,8 @@ public class ScheduledTask {
             log.info("[SCHEDULED]: Performing task...");
             TaskFetchResult result = taskFetchService.fetchTask("wzy", "123456");
             if (result != null) {
-                for (Task task : result.getTasks()) {
-                    boolean code = deviceControlService.deviceOps(task.getDevice_id(), task.getAction());
+                for (Task task : result.tasks()) {
+                    boolean code = deviceControlService.deviceOps(task.device_id(), task.action());
                     log.info("performTask {}", code ? "ok" : "err");
                 }
             }
