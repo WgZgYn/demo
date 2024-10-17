@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 @Service
 public class ActixAuthService {
     private static final Logger log = LoggerFactory.getLogger(ActixAuthService.class);
@@ -28,7 +30,9 @@ public class ActixAuthService {
                 .header("Content-Type", "application/json")
                 .bodyValue(loginRequest)  // 包含用户名和密码的请求体
                 .retrieve()
-                .bodyToMono(LoginResponse.class);  // 假设返回的 JWT token 是字符串
+                .bodyToMono(LoginResponse.class)
+                .retry(3)
+                .timeout(Duration.ofSeconds(2));  // 假设返回的 JWT token 是字符串
     }
 
     @PostConstruct
@@ -36,8 +40,8 @@ public class ActixAuthService {
         log.info("login and fetch token");
         LoginResponse response = login(loginRequest).block();
         if (response != null) {
-            this.token = response.getData().getToken();
-            this.role = response.getData().getRole();
+            this.token = response.claims().token();
+            this.role = response.claims().role();
         } else {
             log.error("login failed");
         }
