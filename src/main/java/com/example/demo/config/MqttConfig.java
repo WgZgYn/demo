@@ -11,9 +11,8 @@ public class MqttConfig {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
         options.setCleanSession(false);
-        options.setConnectionTimeout(10);
+//        options.setConnectionTimeout(10);
         options.setKeepAliveInterval(90);
-
         return options;
     }
 }
