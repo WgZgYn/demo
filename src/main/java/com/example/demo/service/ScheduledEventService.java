@@ -29,12 +29,12 @@ public class ScheduledEventService {
     }
 
     public void deleteScheduledEvent(Long id) {
-        scheduledEvents.removeIf(event -> event.getId().equals(id));
+        scheduledEvents.removeIf(event -> event.id().equals(id));
         // 需要实现取消调度任务的逻辑
     }
 
     private void scheduleEvent(ScheduledEvent event) {
-        taskScheduler.schedule(() -> triggerEvent(event.getEventName()), Instant.parse(event.getStartTime()));
+        taskScheduler.schedule(() -> triggerEvent(event.eventName()), Instant.parse(event.startTime()));
     }
 
     private void triggerEvent(String eventName) {

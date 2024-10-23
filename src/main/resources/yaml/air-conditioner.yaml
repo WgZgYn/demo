@@ -1,42 +1,96 @@
-Entity:
-  identity: "ac-001"
-  type: "Device"
-  metadata:
-    name: "Bedroom Air Conditioner"
-    location: "Bedroom"
+#Entity:
+#  identity: "ac-001"
+#  type: "Device"
+#  metadata:
+#    name: "Bedroom Air Conditioner"
+#    location: "Bedroom"
+#
+#  subscriptions:
+#    - event:
+#        name: "TemperatureChanged"
+#        callbackUrl: "http://example.com/callback/ac"
+#
+#  services:
+#    - name: "TurnOn"
+#      description: "Turn the air conditioner on"
+#      parameters: {}
+#
+#    - name: "TurnOff"
+#      description: "Turn the air conditioner off"
+#      parameters: {}
+#
+#    - name: "SetTemperature"
+#      description: "Set the target temperature"
+#      parameters:
+#        - name: "temperature"
+#          type: "integer"
+#          required: true
+#          constraints:
+#            min: 16
+#            max: 30
+#
+#  actions:
+#    - actionType: "TurnOn"
+#      parameters: {}
+#
+#  events:
+#    - name: "TemperatureChanged"
+#      description: "Triggered when the temperature changes"
+#      timestamp: "2024-10-23T10:00:00Z"
+#      payload:
+#        oldTemperature: 24
+#        newTemperature: 22
+air_conditioner:
+  name: Smart Air Conditioner
+  type: Climate Control Device
+  version: 2.0.0
+  manufacturer: Moonshot AI
 
-  subscriptions:
-    - event:
-        name: "TemperatureChanged"
-        callbackUrl: "http://example.com/callback/ac"
+services:
+  - name: Climate Control Service
+    description: Allows users to control the air conditioner's temperature, mode, and fan speed.
+    methods:
+      - name: setTemperature
+        description: Sets the target temperature.
+        parameters:
+          - name: temperature
+            type: float
+            description: The desired temperature in degrees Celsius.
+      - name: setMode
+        description: Sets the operating mode (cool/heat/dry/auto).
+        parameters:
+          - name: mode
+            type: string
+            description: The desired operating mode.
+      - name: setFanSpeed
+        description: Sets the fan speed (low/medium/high/auto).
+        parameters:
+          - name: speed
+            type: string
+            description: The desired fan speed.
 
-  services:
-    - name: "TurnOn"
-      description: "Turn the air conditioner on"
-      parameters: {}
+publishedEvents:
+  - name: TemperatureChanged
+    description: Published when the target temperature is changed.
+    payload:
+      - name: temperature
+        type: float
+        description: The new target temperature in degrees Celsius.
+  - name: ModeChanged
+    description: Published when the operating mode is changed.
+    payload:
+      - name: mode
+        type: string
+        description: The new operating mode.
 
-    - name: "TurnOff"
-      description: "Turn the air conditioner off"
-      parameters: {}
-
-    - name: "SetTemperature"
-      description: "Set the target temperature"
-      parameters:
-        - name: "temperature"
-          type: "integer"
-          required: true
-          constraints:
-            min: 16
-            max: 30
-
-  actions:
-    - actionType: "TurnOn"
-      parameters: {}
-
-  events:
-    - name: "TemperatureChanged"
-      description: "Triggered when the temperature changes"
-      timestamp: "2024-10-23T10:00:00Z"
-      payload:
-        oldTemperature: 24
-        newTemperature: 22
+subscribedEvents:
+  - name: ScheduleEvent
+    description: Subscribed to schedule events to set the temperature at specific times.
+    payload:
+      - name: temperature
+        type: float
+        description: The scheduled temperature.
+      - name: time
+        type: string
+        format: 'HH:mm:ss'
+        description: The scheduled time.

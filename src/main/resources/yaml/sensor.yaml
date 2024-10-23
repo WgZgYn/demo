@@ -1,44 +1,81 @@
-Entity:
-  identity: "84654"  # 唯一标识符，字符串类型
-  type: "Device"      # 设备类型，例如 "Sensor" 或 "Actuator"
-  metadata:
-    name: "Temperature Sensor"
-    location: "Living Room"
+#Entity:
+#  identity: "84654"  # 唯一标识符，字符串类型
+#  type: "Device"      # 设备类型，例如 "Sensor" 或 "Actuator"
+#  metadata:
+#    name: "Temperature Sensor"
+#    location: "Living Room"
+#
+#  subscriptions:  # 订阅的事件
+#    - event:
+#        name: "TemperatureChanged"
+#        callbackUrl: "http://example.com/callback"
+#      filters:
+#        threshold: 25 # 仅在温度变化超过25度时触发
+#
+#  services:  # 提供的服务
+#    - name: "Open"
+#      description: "Open the device"
+#      parameters:
+#        - name: "duration"
+#          type: "integer"
+#          required: true
+#
+#    - name: "Close"
+#      description: "Close the device"
+#
+#    - name: "Switch"
+#      description: "Switch the device state"
+#      parameters:
+#        - name: "state"
+#          type: "boolean"
+#          required: true
+#
+#  actions:  # 执行的操作
+#    - actionType: "Open"
+#      parameters:
+#        duration: 5
+#
+#  events:  # 事件列表
+#    - name: "TemperatureChanged"
+#      description: "Triggered when the temperature changes"
+#      timestamp: "2024-10-23T10:00:00Z"
+#      payload:
+#        oldValue: 22
+#        newValue: 27
+sensor:
+  name: Environmental Sensor
+  type: Sensor Device
+  version: 1.0.0
+  manufacturer: Moonshot AI
 
-  subscriptions:  # 订阅的事件
-    - event:
-        name: "TemperatureChanged"
-        callbackUrl: "http://example.com/callback"
-      filters:
-        threshold: 25 # 仅在温度变化超过25度时触发
+services:
+  - name: Sensor Data Service
+    description: Provides real-time environmental data such as temperature, humidity, and air quality.
+    methods:
+      - name: getSensorData
+        description: Retrieves the current environmental data.
 
-  services:  # 提供的服务
-    - name: "Open"
-      description: "Open the device"
-      parameters:
-        - name: "duration"
-          type: "integer"
-          required: true
+publishedEvents:
+  - name: EnvironmentalDataUpdated
+    description: Published when new environmental data is available.
+    payload:
+      - name: temperature
+        type: float
+        description: The current temperature in degrees Celsius.
+      - name: humidity
+        type: float
+        description: The current humidity percentage.
+      - name: airQuality
+        type: string
+        description: The current air quality index.
 
-    - name: "Close"
-      description: "Close the device"
-
-    - name: "Switch"
-      description: "Switch the device state"
-      parameters:
-        - name: "state"
-          type: "boolean"
-          required: true
-
-  actions:  # 执行的操作
-    - actionType: "Open"
-      parameters:
-        duration: 5
-
-  events:  # 事件列表
-    - name: "TemperatureChanged"
-      description: "Triggered when the temperature changes"
-      timestamp: "2024-10-23T10:00:00Z"
-      payload:
-        oldValue: 22
-        newValue: 27
+subscribedEvents:
+  - name: ThresholdEvent
+    description: Subscribed to threshold events to trigger actions based on environmental data.
+    payload:
+      - name: type
+        type: string
+        description: The type of threshold (temperature/humidity/airQuality).
+      - name: value
+        type: float
+        description: The threshold value.

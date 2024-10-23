@@ -1,0 +1,35 @@
+schedule:
+  name: Schedule Service
+  type: Scheduling Device
+  version: 1.0.0
+  manufacturer: Moonshot AI
+
+services:
+  - name: Daily Schedule Service
+    description: Manages daily schedules for devices.
+  - name: Weekly Schedule Service
+    description: Manages weekly schedules for devices.
+
+publishedEvents:
+  - name: ScheduleUpdated
+    description: Published when a schedule is updated.
+    payload:
+      - name: scheduleType
+        type: string
+        description: The type of schedule (daily/weekly).
+      - name: time
+        type: string
+        format: 'HH:mm:ss'
+        description: The scheduled time.
+      - name: action
+        type: string
+        description: The action to be taken at the scheduled time.
+
+subscribedEvents:
+  - name: TimeEvent
+    description: Subscribed to time events to trigger scheduled actions.
+    payload:
+      - name: time
+        type: string
+        format: 'HH:mm:ss'
+        description: The current time.

@@ -1,0 +1,30 @@
+timer:
+  name: Timer Service
+  type: Timing Device
+  version: 1.0.0
+  manufacturer: Moonshot AI
+
+services:
+  - name: Timer Control Service
+    description: Allows users to set and control timers for devices.
+    methods:
+      - name: setTimer
+        description: Sets a timer for a device.
+        parameters:
+          - name: duration
+            type: integer
+            description: The timer duration in seconds.
+      - name: cancelTimer
+        description: Cancels the active timer.
+
+publishedEvents:
+  - name: TimerStarted
+    description: Published when a timer is started.
+    payload:
+      - name: duration
+        type: integer
+        description: The timer duration in seconds.
+  - name: TimerCancelled
+    description: Published when a timer is cancelled.
+  - name: TimerExpired
+    description: Published when a timer expires.

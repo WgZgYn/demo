@@ -1,42 +1,76 @@
-Entity:
-  identity: "light-001"
-  type: "Device"
-  metadata:
-    name: "Living Room Light"
-    location: "Living Room"
+device:
+  name: Smart Bulb
+  type: Lighting Device
+  version: 1.0.0
+  manufacturer: Moonshot AI
 
-  subscriptions:
-    - event:
-        name: "LightStatusChanged"
-        callbackUrl: "http://example.com/callback/light"
+services:
+  - name: Light Control Service
+    description: Allows users to control the light's power state and brightness.
+    methods:
+      - name: turnOn
+        description: Turns the light on.
+      - name: turnOff
+        description: Turns the light off.
+      - name: setBrightness
+        description: Sets the brightness level of the light.
+        parameters:
+          - name: brightness
+            type: integer
+            constraints:
+              min: 0
+              max: 100
+            description: The desired brightness level (0-100%).
 
-  services:
-    - name: "TurnOn"
-      description: "Turn the light on"
-      parameters: {}
+publishedEvents:
+  - name: LightStateChanged
+    description: Published when the light's power state changes.
+    payload:
+      - name: state
+        type: string
+        description: The new power state of the light (on/off).
+  - name: BrightnessChanged
+    description: Published when the light's brightness changes.
+    payload:
+      - name: brightness
+        type: integer
+        description: The new brightness level (0-100%).
 
-    - name: "TurnOff"
-      description: "Turn the light off"
-      parameters: {}
+subscribedEvents:
+  - name: ScheduleEvent
+    description: Subscribed to schedule events to turn the light on or off at specific times.
+    payload:
+      - name: action
+        type: string
+        description: The scheduled action (turnOn/turnOff).
+      - name: time
+        type: string
+        format: 'HH:mm:ss'
+        description: The scheduled time for the action.
+  - name: VoiceCommand
+    description: Subscribed to voice commands to control the light.
+    payload:
+      - name: command
+        type: string
+        description: The voice command received (on/off/brightness level).
+  - name: SceneChange
+    description: Subscribed to scene change events to adjust the light accordingly.
+    payload:
+      - name: scene
+        type: string
+        description: The scene identifier.
+      - name: settings
+        type: object
+        description: The light settings for the scene.
+        properties:
+          - name: brightness
+            type: integer
+            description: The brightness level for the scene (0-100%).
+          - name: color
+            type: string
+            description: The color for the light in the scene.
 
-    - name: "SetBrightness"
-      description: "Set the brightness level"
-      parameters:
-        - name: "level"
-          type: "integer"
-          required: true
-          constraints:
-            min: 0
-            max: 100
-
-  actions:
-    - actionType: "TurnOn"
-      parameters: {}
-
-  events:
-    - name: "LightStatusChanged"
-      description: "Triggered when the light status changes"
-      timestamp: "2024-10-23T10:00:00Z"
-      payload:
-        oldStatus: "off"
-        newStatus: "on"
+metadata:
+  deviceID: bulb-1234
+  firmwareVersion: 1.2.3
+  lastServiceDate: '2023-10-01'
