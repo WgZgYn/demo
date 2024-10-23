@@ -1,29 +1,24 @@
 package com.example.demo.service.mqtt;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**
  * Mqtt服务
  */
+@Slf4j
 @Service
 public class MqttClientService {
-    private static final String broker = "tcp://47.108.27.238:1883";
-    private static final Logger log = LoggerFactory.getLogger(MqttClientService.class);
     private static final String clientId = "wzy-host";
-    private final MqttConnectOptions options;
-
     ApplicationEventPublisher publisher;
-    MqttClient client = null;
+    MqttAsyncClient client;
 
-    MqttClientService(ApplicationEventPublisher publisher, MqttConnectOptions options) {
+    MqttClientService(ApplicationEventPublisher publisher, MqttAsyncClient client) {
         this.publisher = publisher;
-        this.options = options;
+        this.client = client;
     }
 
     @PostConstruct
@@ -35,13 +30,10 @@ public class MqttClientService {
         }
     }
 
-
     public void connect() throws MqttException {
-        this.client = new MqttClient(broker, clientId, new MemoryPersistence());
         client.setCallback(new Callback());
-        client.connect(options);
-        client.subscribe("host");
-        log.info("Connected to " + broker);
+        client.subscribe("host", 2);
+        log.info("Connected to broker {}", client.getServerURI());
     }
 
     public void disconnect() throws MqttException {
@@ -51,7 +43,14 @@ public class MqttClientService {
     }
 
     public void publish(String topic, String message) throws MqttException {
-        client.publish(topic, new MqttMessage(message.getBytes()));
+        publish(topic, message, 2);
+    }
+
+
+    public void publish(String topic, String message, int qos) throws MqttException {
+        MqttMessage mqttMessage = new MqttMessage(message.getBytes());
+        mqttMessage.setQos(qos);
+        client.publish(topic, mqttMessage);
     }
 
     class Callback implements MqttCallback, MqttCallbackExtended {
@@ -73,7 +72,7 @@ public class MqttClientService {
         @Override
         public void connectComplete(boolean b, String s) {
             try {
-                client.subscribe("host");
+                client.subscribe("host", 2);
                 log.info("Reconnect and subscribe success");
             } catch (MqttException e) {
                 log.error(e.getMessage());
