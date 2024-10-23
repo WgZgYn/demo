@@ -37,7 +37,7 @@ public class mdnsService {
 
             // 注册服务
             jmdns.registerService(serviceInfo);
-            System.out.println("mDNS service registered: " + serviceName);
+            log.info("mDNS service registered: {}", serviceName);
         } catch (IOException e) {
             e.fillInStackTrace();
             log.error(e.getMessage());
