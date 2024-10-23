@@ -1,0 +1,44 @@
+Entity:
+  identity: "84654"  # 唯一标识符，字符串类型
+  type: "Device"      # 设备类型，例如 "Sensor" 或 "Actuator"
+  metadata:
+    name: "Temperature Sensor"
+    location: "Living Room"
+
+  subscriptions:  # 订阅的事件
+    - event:
+        name: "TemperatureChanged"
+        callbackUrl: "http://example.com/callback"
+      filters:
+        threshold: 25 # 仅在温度变化超过25度时触发
+
+  services:  # 提供的服务
+    - name: "Open"
+      description: "Open the device"
+      parameters:
+        - name: "duration"
+          type: "integer"
+          required: true
+
+    - name: "Close"
+      description: "Close the device"
+
+    - name: "Switch"
+      description: "Switch the device state"
+      parameters:
+        - name: "state"
+          type: "boolean"
+          required: true
+
+  actions:  # 执行的操作
+    - actionType: "Open"
+      parameters:
+        duration: 5
+
+  events:  # 事件列表
+    - name: "TemperatureChanged"
+      description: "Triggered when the temperature changes"
+      timestamp: "2024-10-23T10:00:00Z"
+      payload:
+        oldValue: 22
+        newValue: 27

@@ -1,0 +1,42 @@
+Entity:
+  identity: "ac-001"
+  type: "Device"
+  metadata:
+    name: "Bedroom Air Conditioner"
+    location: "Bedroom"
+
+  subscriptions:
+    - event:
+        name: "TemperatureChanged"
+        callbackUrl: "http://example.com/callback/ac"
+
+  services:
+    - name: "TurnOn"
+      description: "Turn the air conditioner on"
+      parameters: {}
+
+    - name: "TurnOff"
+      description: "Turn the air conditioner off"
+      parameters: {}
+
+    - name: "SetTemperature"
+      description: "Set the target temperature"
+      parameters:
+        - name: "temperature"
+          type: "integer"
+          required: true
+          constraints:
+            min: 16
+            max: 30
+
+  actions:
+    - actionType: "TurnOn"
+      parameters: {}
+
+  events:
+    - name: "TemperatureChanged"
+      description: "Triggered when the temperature changes"
+      timestamp: "2024-10-23T10:00:00Z"
+      payload:
+        oldTemperature: 24
+        newTemperature: 22

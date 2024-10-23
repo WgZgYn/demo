@@ -1,0 +1,42 @@
+Entity:
+  identity: "light-001"
+  type: "Device"
+  metadata:
+    name: "Living Room Light"
+    location: "Living Room"
+
+  subscriptions:
+    - event:
+        name: "LightStatusChanged"
+        callbackUrl: "http://example.com/callback/light"
+
+  services:
+    - name: "TurnOn"
+      description: "Turn the light on"
+      parameters: {}
+
+    - name: "TurnOff"
+      description: "Turn the light off"
+      parameters: {}
+
+    - name: "SetBrightness"
+      description: "Set the brightness level"
+      parameters:
+        - name: "level"
+          type: "integer"
+          required: true
+          constraints:
+            min: 0
+            max: 100
+
+  actions:
+    - actionType: "TurnOn"
+      parameters: {}
+
+  events:
+    - name: "LightStatusChanged"
+      description: "Triggered when the light status changes"
+      timestamp: "2024-10-23T10:00:00Z"
+      payload:
+        oldStatus: "off"
+        newStatus: "on"
