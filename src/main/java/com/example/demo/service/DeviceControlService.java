@@ -42,7 +42,7 @@ public class DeviceControlService {
             }
         } else {
             try {
-                mqttClientService.publish(device + "/ops", ops);
+                mqttClientService.publish(device + "/service", ops);
                 return true;
             } catch (MqttException e) {
                 e.fillInStackTrace();
