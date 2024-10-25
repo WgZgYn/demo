@@ -3,17 +3,16 @@ package com.example.demo.service.http;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
 import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
+@Slf4j
 @Service
 public class ActixAuthService {
-    private static final Logger log = LoggerFactory.getLogger(ActixAuthService.class);
     private final WebClient webClient;
     private final LoginRequest loginRequest;
     private String token = "";

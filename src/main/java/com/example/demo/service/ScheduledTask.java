@@ -3,15 +3,14 @@ package com.example.demo.service;
 
 import com.example.demo.dto.Task;
 import com.example.demo.dto.TaskFetchResult;
+import com.example.demo.service.device.DeviceControlService;
 import com.example.demo.service.http.TaskFetchService;
-import com.example.demo.service.mqtt.MqttClientService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class ScheduledTask {
-    private static final Logger log = LoggerFactory.getLogger(ScheduledTask.class);
 
     private final DeviceControlService deviceControlService;
     private final TaskFetchService taskFetchService;

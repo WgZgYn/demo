@@ -1,29 +1,23 @@
 package com.example.demo.service.http;
 
 import com.example.demo.event.ServerPushingEvent;
-import com.example.demo.service.DeviceControlService;
+import com.example.demo.service.device.DeviceControlService;
 import com.example.demo.service.ScheduledTask;
 import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
 
+@Slf4j
 @Service
 public class SseClientService {
-    private static final Logger log = LoggerFactory.getLogger(SseClientService.class);
     private static final String sseUrl = "http://47.108.27.238:80/api/sse";
 
 

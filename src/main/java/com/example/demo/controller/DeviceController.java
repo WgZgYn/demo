@@ -1,20 +1,18 @@
 package com.example.demo.controller;
 
-import com.example.demo.service.DeviceControlService;
-import com.example.demo.service.DeviceDataService;
+import com.example.demo.service.device.DeviceControlService;
+import com.example.demo.service.device.DeviceDataService;
 import com.example.demo.util.Response;
 import com.example.demo.util.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
+@Slf4j
 @RestController
 public class DeviceController {
-    private static final Logger log = LoggerFactory.getLogger(DeviceController.class);
-
     private final DeviceDataService deviceDataService;
     private final DeviceControlService deviceControlService;
 
@@ -48,6 +46,11 @@ public class DeviceController {
             return Result.Ok();
         }
         return Result.Err("err");
+    }
+
+    @GetMapping("/device/{id}/service")
+    public Result service(@PathVariable String id) {
+        return Result.Ok();
     }
 }
 

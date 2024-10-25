@@ -1,15 +1,14 @@
 package com.example.demo.event;
 
-import com.example.demo.service.DeviceControlService;
+import com.example.demo.service.device.DeviceControlService;
 import com.example.demo.service.ScheduledTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class ServerPushingEventListener implements ApplicationListener<ServerPushingEvent> {
-    private static final Logger log = LoggerFactory.getLogger(ServerPushingEventListener.class);
 
     DeviceControlService deviceControlService;
     ScheduledTask scheduledTask;
