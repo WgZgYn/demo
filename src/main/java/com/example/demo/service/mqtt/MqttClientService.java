@@ -28,16 +28,11 @@ public class MqttClientService {
 
     @PostConstruct
     void init() {
-        try {
-            connect();
-        } catch (MqttException e) {
-            log.error(e.getMessage());
-        }
+        connect();
     }
 
-    public void connect() throws MqttException {
+    public void connect() {
         client.setCallback(new Callback());
-        client.subscribe("host", 2);
         log.info("Connected to broker {}", client.getServerURI());
     }
 
@@ -68,7 +63,6 @@ public class MqttClientService {
         @Override
         public void messageArrived(String topic, MqttMessage mqttMessage) {
             log.info("MqttMessage received: {}", mqttMessage.toString());
-
             if (topic.equals(eventTopic)) {
                 byte[] data = mqttMessage.getPayload();
                 try {
@@ -90,6 +84,7 @@ public class MqttClientService {
             try {
                 client.setCallback(new Callback());
                 client.subscribe("host", 2);
+                client.subscribe("device", 1);
                 client.subscribe(eventTopic, 2);
                 log.info("Reconnect and subscribe success");
             } catch (MqttException e) {

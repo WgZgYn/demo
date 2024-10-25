@@ -24,7 +24,7 @@ public class MqttConfig {
         options.setServerURIs(new String[] { broker });
         options.setAutomaticReconnect(true);
         options.setCleanSession(false);
-//        options.setConnectionTimeout(10);
+        options.setConnectionTimeout(10);
         options.setKeepAliveInterval(90);
         return options;
     }
