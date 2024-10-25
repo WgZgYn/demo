@@ -1,20 +1,21 @@
-package com.example.demo.service;
+package com.example.demo.service.device;
 
 import com.example.demo.service.mqtt.MqttClientService;
 import com.example.demo.util.TcpStream;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+@Slf4j
 @Service
 public class DeviceControlService {
-    private static final Logger log = LoggerFactory.getLogger(DeviceControlService.class);
     private static final int DEFAULT_TIMEOUT = 5000;
-    private static final int PORT = 45678;
+
+    @Value("${device_tcp_listening_port}")
+    private int PORT;
 
     @Value("${using-tcp}")
     private static boolean usingTcp;
@@ -39,6 +40,7 @@ public class DeviceControlService {
                 return true;
             } catch (IOException e) {
                 e.fillInStackTrace();
+                log.error(e.getMessage());
             }
         } else {
             try {
@@ -46,6 +48,7 @@ public class DeviceControlService {
                 return true;
             } catch (MqttException e) {
                 e.fillInStackTrace();
+                log.error(e.getMessage());
             }
         }
         return false;
@@ -66,5 +69,9 @@ public class DeviceControlService {
             e.fillInStackTrace();
             return false;
         }
+    }
+
+    public void send_event(String device, String action) {
+        deviceOps(device, action);
     }
 }

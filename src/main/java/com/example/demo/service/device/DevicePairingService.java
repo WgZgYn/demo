@@ -1,7 +1,5 @@
-package com.example.demo.service.tcp;
+package com.example.demo.service.device;
 
-import com.example.demo.service.DeviceControlService;
-import com.example.demo.service.DeviceDataService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,23 +9,37 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Slf4j
 @Service
-public class DevicePairService {
+public class DevicePairingService {
     @Value("${local_tcp_listening_port}")
     private int LISTEN_PORT;
 
     @Value("${pair_code}")
     private int ASK_FOR_PAIR;
 
+    private final Set<String> pairingDevicesIP = new HashSet<>();
+
     DeviceControlService deviceControlService;
     DeviceDataService deviceDataService;
 
-    public DevicePairService(DeviceControlService deviceControlService, DeviceDataService deviceDataService) {
+    public DevicePairingService(DeviceControlService deviceControlService, DeviceDataService deviceDataService) {
         this.deviceControlService = deviceControlService;
         this.deviceDataService = deviceDataService;
+    }
+
+
+    public void addPairingDevice(String ip) {
+        pairingDevicesIP.add(ip);
+    }
+
+    public List<String> getPairingDevicesIP() {
+        return pairingDevicesIP.stream().toList();
     }
 
     @PostConstruct
@@ -49,7 +61,7 @@ public class DevicePairService {
 
                         clientSocket.getOutputStream().write(200);
 //                        log.info("read reply: {}", deviceId);
-                        deviceDataService.addPairingDevice(address.getHostAddress());
+                        addPairingDevice(address.getHostAddress());
                     } catch (IOException e) {
                         log.error("Client connection error: ", e);
                     }

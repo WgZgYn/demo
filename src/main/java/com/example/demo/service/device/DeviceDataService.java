@@ -1,18 +1,17 @@
-package com.example.demo.service;
+package com.example.demo.service.device;
 
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+
+// FIXME maybe this class could be placed in repository
+
 @Service
 public class DeviceDataService {
+    // TODO replaced with postgresql
     private final Map<String, String> devices = new HashMap<>();
 
-    private final Set<String> pairing_devices = new HashSet<>();
-
-    public void addPairingDevice(String ip) {
-        pairing_devices.add(ip);
-    }
 
     public List<String> listDevices() {
         return new ArrayList<>(devices.keySet());
