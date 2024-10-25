@@ -8,18 +8,18 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class DeviceEventListener implements ApplicationListener<DeviceEvent> {
+public class EventListener implements ApplicationListener<Event> {
     ApplicationEventPublisher applicationEventPublisher;
     SubscribeService subscribeService;
 
 
-    DeviceEventListener(ApplicationEventPublisher applicationEventPublisher, SubscribeService subscribeService) {
+    EventListener(ApplicationEventPublisher applicationEventPublisher, SubscribeService subscribeService) {
         this.applicationEventPublisher = applicationEventPublisher;
         this.subscribeService = subscribeService;
     }
 
     @Override
-    public void onApplicationEvent(DeviceEvent event) {
-
+    public void onApplicationEvent(Event event) {
+        subscribeService.broadcast(event);
     }
 }
