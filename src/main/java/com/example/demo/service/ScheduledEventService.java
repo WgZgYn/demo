@@ -1,44 +1,55 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.ScheduledEvent;
+import com.example.demo.event.events.ScheduledEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 @Service
 public class ScheduledEventService {
-    private ThreadPoolTaskScheduler taskScheduler;
-    private final List<ScheduledEvent> scheduledEvents = new ArrayList<>();
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final ThreadPoolTaskScheduler taskScheduler;
+
+    // TODO: replaced with postgres
+    private final List<ScheduledFuture<?>> scheduledEvents = new ArrayList<>();
 
 
-    public ScheduledEventService(ThreadPoolTaskScheduler taskScheduler) {
+    public ScheduledEventService(ThreadPoolTaskScheduler taskScheduler, ApplicationEventPublisher applicationEventPublisher) {
         taskScheduler.initialize();
+        this.taskScheduler = taskScheduler;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public ScheduledEvent addScheduledEvent(ScheduledEvent event) {
-        scheduledEvents.add(event);
-        scheduleEvent(event);
-        return event;
+    public int addScheduledEvent(ScheduledEvent event) {
+        return scheduleEvent(event);
     }
 
-    public List<ScheduledEvent> getAllScheduledEvents() {
+    public List<ScheduledFuture<?>> getAllScheduledEvents() {
         return scheduledEvents;
     }
 
-    public void deleteScheduledEvent(Long id) {
-        scheduledEvents.removeIf(event -> event.id().equals(id));
-        // 需要实现取消调度任务的逻辑
+    public void deleteScheduledEvent(int id) {
+        for (ScheduledFuture<?> scheduledEvent : scheduledEvents) {
+            if (scheduledEvent.hashCode() == id) {
+                scheduledEvent.cancel(true);
+            }
+        }
     }
 
-    private void scheduleEvent(ScheduledEvent event) {
-        taskScheduler.schedule(() -> triggerEvent(event.eventName()), Instant.parse(event.startTime()));
+    // avoid same hashcode
+    private int scheduleEvent(ScheduledEvent event) {
+        ScheduledFuture<?> handler = taskScheduler.schedule(() -> triggerEvent(event), new CronTrigger("0/20 * * * * *"));
+        return handler.hashCode();
     }
 
-    private void triggerEvent(String eventName) {
+    private void triggerEvent(ScheduledEvent event) {
         // 执行事件触发逻辑
+        applicationEventPublisher.publishEvent(event);
     }
 }
 
