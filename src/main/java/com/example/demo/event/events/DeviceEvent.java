@@ -1,10 +1,10 @@
-package com.example.demo.event;
+package com.example.demo.event.events;
 
+import com.example.demo.event.Event;
 import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
 
 @Getter
-public class DeviceEvent extends ApplicationEvent {
+public class DeviceEvent extends Event {
     private final String from;
     private final String msg;
 
@@ -12,5 +12,10 @@ public class DeviceEvent extends ApplicationEvent {
         super(source);
         this.from = from;
         this.msg = msg;
+    }
+
+    @Override
+    public String getType() {
+        return "DeviceEvent";
     }
 }
