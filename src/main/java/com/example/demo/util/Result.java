@@ -1,8 +1,9 @@
 package com.example.demo.util;
 
-import java.io.Serializable;
+import lombok.Data;
 
-public class Result implements Serializable {
+@Data
+public class Result {
     protected int code;
     protected String message;
     protected long timestamp;

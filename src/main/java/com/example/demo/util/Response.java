@@ -1,8 +1,12 @@
 package com.example.demo.util;
 
-import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 
-public class Response<T> extends Result implements Serializable {
+
+@Setter
+@Getter
+public class Response<T> extends Result {
     private final T data;
 
     public Response(int code, String message, T data) {
@@ -20,21 +24,5 @@ public class Response<T> extends Result implements Serializable {
 
     public static <T> Response<T> error(int code, String message) {
         return new Response<>(code, message, null);
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public T getData() {
-        return data;
     }
 }
