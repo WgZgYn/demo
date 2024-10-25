@@ -1,6 +1,7 @@
 package com.example.demo.service.mqtt;
 
-import com.example.demo.event.DeviceEvent;
+import com.example.demo.dto.MqttEventMessage;
+import com.example.demo.event.events.DeviceEvent;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
@@ -14,12 +15,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class MqttClientService {
-    @Value("${mqtt-message-event-suffix}")
-    String eventSuffix;
-
-    @Value("${mqtt-message-service-suffix}")
-    String serviceSuffix;
-
+    @Value("${mqtt-device-event-topic}")
+    String eventTopic;
 
     ApplicationEventPublisher publisher;
     MqttAsyncClient client;
@@ -61,9 +58,6 @@ public class MqttClientService {
         client.publish(topic, mqttMessage);
     }
 
-    public void subscribe(String topic) throws MqttException {
-        client.subscribe(topic, 2);
-    }
 
     class Callback implements MqttCallback, MqttCallbackExtended {
         @Override
@@ -74,8 +68,15 @@ public class MqttClientService {
         @Override
         public void messageArrived(String topic, MqttMessage mqttMessage) {
             log.info("MqttMessage received: {}", mqttMessage.toString());
-            if (topic.endsWith(eventSuffix)) {
-                publisher.publishEvent(new DeviceEvent(this, topic, mqttMessage.toString()));
+
+            if (topic.equals(eventTopic)) {
+                byte[] data = mqttMessage.getPayload();
+                try {
+                    MqttEventMessage msg = MqttEventMessage.from(data);
+                    publisher.publishEvent(new DeviceEvent(this, msg.getFrom(), msg.getEvent()));
+                } catch (MqttEventMessage.Error e) {
+                    log.error(e.getMessage());
+                }
             }
         }
 
@@ -89,6 +90,7 @@ public class MqttClientService {
             try {
                 client.setCallback(new Callback());
                 client.subscribe("host", 2);
+                client.subscribe(eventTopic, 2);
                 log.info("Reconnect and subscribe success");
             } catch (MqttException e) {
                 log.error(e.getMessage());
