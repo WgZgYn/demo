@@ -18,7 +18,7 @@ public class DeviceControlService {
     private int PORT;
 
     @Value("${using-tcp}")
-    private static boolean usingTcp;
+    private boolean usingTcp;
 
     MqttClientService mqttClientService;
     DeviceDataService deviceDataService;
