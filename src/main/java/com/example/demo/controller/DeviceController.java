@@ -25,8 +25,6 @@ public class DeviceController {
         this.deviceControlService = deviceControlService;
     }
 
-    @ResponseBody
-    //@GetMapping("/device/{id}/{ops}")
     @GetMapping("/{id}/{ops}")
     public Result lightOps(@PathVariable String id, @PathVariable String ops) {
         if (deviceControlService.deviceOps(id, ops)) {
@@ -35,15 +33,11 @@ public class DeviceController {
         return Result.Err("err");
     }
 
-    @ResponseBody
-    //@GetMapping("/device/list")
     @GetMapping("/list")
     public Response<List<String>> list() {
         return Response.success(deviceDataService.listDevices());
     }
 
-    @ResponseBody
-    //@GetMapping("/device/connect/{ip}")
     @GetMapping("/connect/{ip}")
     public Result connect(@PathVariable String ip) {
         if (deviceControlService.connect(ip)) {
@@ -52,11 +46,9 @@ public class DeviceController {
         return Result.Err("err");
     }
 
-    @ResponseBody
-    //@GetMapping("/device/{id}/service")
     @GetMapping("/{id}/service")
-    public Result service(@PathVariable String id) {
-        return Result.Ok();
+    public Response<String> service(@PathVariable String id) {
+        return Response.success(id);
     }
 }
 
