@@ -4,13 +4,11 @@ import com.example.demo.dto.TaskFetchResult;
 import com.example.demo.service.http.TaskFetchService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
-@RestController
+@RestController("/test")
 public class TaskController {
     private final TaskFetchService taskFetchService;
 
@@ -19,10 +17,20 @@ public class TaskController {
     }
 
     @ResponseBody
-    @GetMapping("/test/fetch")
+    @GetMapping("/fetch")
     public TaskFetchResult fetchTask() throws JsonProcessingException {
         log.info("Controller Fetching task");
         return taskFetchService.fetchTask("wzy", "123456");
+    }
+
+    @PostMapping(value = "/echo", consumes = "text/plain")
+    String echo(@RequestBody String body) {
+        return "echo: " + body;
+    }
+
+    @GetMapping(value = "/ping")
+    String ping() {
+        return "pong";
     }
 }
 
