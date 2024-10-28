@@ -1,11 +1,11 @@
 package com.example.demo.service.mqtt;
 
+import com.example.demo.config.MqttConfig;
 import com.example.demo.dto.MqttEventMessage;
 import com.example.demo.event.events.DeviceEvent;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -15,30 +15,32 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class MqttClientService {
-    @Value("${mqtt-device-event-topic}")
-    String eventTopic;
-
     ApplicationEventPublisher publisher;
-    MqttAsyncClient client;
+    MqttClient client;
+    MqttConnectOptions options;
+    MqttConfig.Topic mqttTopic;
 
-    MqttClientService(ApplicationEventPublisher publisher, MqttAsyncClient client) {
+    MqttClientService(ApplicationEventPublisher publisher, MqttConnectOptions options, MqttClient client, MqttConfig.Topic mqttTopic) {
         this.publisher = publisher;
+        this.options = options;
         this.client = client;
+        this.mqttTopic = mqttTopic;
     }
 
     @PostConstruct
     void init() {
         try {
-            connect();
+            client.setCallback(new Callback());
+            client.connect(options);
+            setSubscribedTopics();
+            log.info("mqtt client init finished");
         } catch (MqttException e) {
-            log.error(e.getMessage());
+            log.error("mqtt client init error", e);
         }
     }
 
-    public void connect() throws MqttException {
-        client.setCallback(new Callback());
-        client.subscribe("host", 2);
-        log.info("Connected to broker {}", client.getServerURI());
+    void setSubscribedTopics() throws MqttException {
+        client.subscribe(mqttTopic.getSubscribeTopics(), mqttTopic.getSubscribeQos());
     }
 
     public void disconnect() throws MqttException {
@@ -68,8 +70,7 @@ public class MqttClientService {
         @Override
         public void messageArrived(String topic, MqttMessage mqttMessage) {
             log.info("MqttMessage received: {}", mqttMessage.toString());
-
-            if (topic.equals(eventTopic)) {
+            if (topic.equals(mqttTopic.getDeviceEvents())) {
                 byte[] data = mqttMessage.getPayload();
                 try {
                     MqttEventMessage msg = MqttEventMessage.from(data);
@@ -88,9 +89,7 @@ public class MqttClientService {
         @Override
         public void connectComplete(boolean b, String s) {
             try {
-                client.setCallback(new Callback());
-                client.subscribe("host", 2);
-                client.subscribe(eventTopic, 2);
+                setSubscribedTopics();
                 log.info("Reconnect and subscribe success");
             } catch (MqttException e) {
                 log.error(e.getMessage());

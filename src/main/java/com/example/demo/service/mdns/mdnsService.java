@@ -25,7 +25,7 @@ public class mdnsService {
             // 创建服务信息
             String serviceName = "MyService";
             String serviceType = "_http._tcp.local.";
-            int port = 8080; // 服务端口
+            int port = 8088; // 服务端口
             String serviceDescription = "My Spring Boot mDNS Service";
 
             ServiceInfo serviceInfo = ServiceInfo.create(
@@ -38,8 +38,7 @@ public class mdnsService {
             // 注册服务
             jmdns.registerService(serviceInfo);
             log.info("mDNS service registered: {}", serviceName);
-        } catch (IOException e) {
-            e.fillInStackTrace();
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
     }
