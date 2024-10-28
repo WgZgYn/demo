@@ -12,6 +12,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/device")
 public class DeviceController {
     private final DeviceDataService deviceDataService;
     private final DeviceControlService deviceControlService;
@@ -25,7 +26,8 @@ public class DeviceController {
     }
 
     @ResponseBody
-    @GetMapping("/device/{id}/{ops}")
+    //@GetMapping("/device/{id}/{ops}")
+    @GetMapping("/{id}/{ops}")
     public Result lightOps(@PathVariable String id, @PathVariable String ops) {
         if (deviceControlService.deviceOps(id, ops)) {
             return Result.Ok();
@@ -34,13 +36,15 @@ public class DeviceController {
     }
 
     @ResponseBody
-    @GetMapping("/device/list")
+    //@GetMapping("/device/list")
+    @GetMapping("/list")
     public Response<List<String>> list() {
         return Response.success(deviceDataService.listDevices());
     }
 
     @ResponseBody
-    @GetMapping("/device/connect/{ip}")
+    //@GetMapping("/device/connect/{ip}")
+    @GetMapping("/connect/{ip}")
     public Result connect(@PathVariable String ip) {
         if (deviceControlService.connect(ip)) {
             return Result.Ok();
@@ -48,7 +52,9 @@ public class DeviceController {
         return Result.Err("err");
     }
 
-    @GetMapping("/device/{id}/service")
+    @ResponseBody
+    //@GetMapping("/device/{id}/service")
+    @GetMapping("/{id}/service")
     public Result service(@PathVariable String id) {
         return Result.Ok();
     }
