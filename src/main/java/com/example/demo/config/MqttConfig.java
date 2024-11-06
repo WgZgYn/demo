@@ -6,18 +6,17 @@ import org.springframework.context.annotation.Configuration;
 
 public class MqttConfig {
     @Getter(AccessLevel.PUBLIC)
-    @Setter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PUBLIC)
     @Configuration
     @ConfigurationProperties(prefix = "mqtt.topic")
     public static class Topic {
         private String[] subscribeTopics;
         private int[] subscribeQos;
-        private String deviceListener;
         private String deviceEvents;
     }
 
     @Getter(AccessLevel.PUBLIC)
-    @Setter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PUBLIC)
     @Configuration
     @ConfigurationProperties(prefix = "mqtt.client")
     public static class Client {

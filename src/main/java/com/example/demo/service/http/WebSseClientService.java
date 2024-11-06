@@ -17,7 +17,7 @@ public class WebSseClientService {
 
     public Flux<String> getSseMessages() {
         return webClient.get()
-                .uri("/sse/test") // 替换为远端服务器的 SSE 端点
+                .uri("/sse") // 替换为远端服务器的 SSE 端点
                 .header("Content-Type", "text/event-stream")
                 .header("Cache-Control", "no-cache")
                 .retrieve()

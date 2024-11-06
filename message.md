@@ -38,7 +38,7 @@ There are some typical device kinds.
           it will be useful to gather the device have the same protocol such as the Local-Network or Serial-Switch,
           This kind device could offer proxy
       
-    * 
+    * based on user's message sending
 
 ## View 
 To have a view of the hole system's work, it comes.
@@ -49,6 +49,20 @@ To have a view of the hole system's work, it comes.
     > Android Based
   
 ## Cloud as Model
-> 
+> considering the control message would be a huge number with the user or device becoming more and more
+  so it's impossible to store all the control message or device state in the database, 
 
+What can be stored in the database?
+* device meta info
+* already paired device
+* cloud control log
+* account info
+* user info
+
+What can be stored in the memory?
+* connect session
+    > if the communication is based on connection
+      like serial connection or http keep-alive
+* device current cached state
+    > this task maybe only available to local-control-device
 
